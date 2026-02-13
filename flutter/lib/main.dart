@@ -157,7 +157,7 @@ void runMainApp(bool startService) async {
   WindowOptions windowOptions = getHiddenTitleBarWindowOptions(
       isMainWindow: true, 
       alwaysOnTop: alwaysOnTop,
-      size: Size(340, 220), // <--- 在这里加上您想要的宽和高
+      size: Size(340, 260), // <--- 在这里加上您想要的宽和高
       center: true,          // <--- 可选：让它启动时居中
   );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
