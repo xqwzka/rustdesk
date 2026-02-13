@@ -463,11 +463,24 @@ def init_global_vars(dist_dir, app_name, args):
             shell=True,
         )
         output, _ = process.communicate()
-        return output.decode("utf-8").strip()
+        # ban non-UTF8 bytes; older builds or localized output may contain
+        # characters that aren't valid UTF-8. fall back to latin‑1 so the
+        # script doesn't crash on CI.
+        try:
+            return output.decode("utf-8").strip()
+        except UnicodeDecodeError:
+            return output.decode("latin-1", errors="ignore").strip()
 
     global g_version
     global g_build_date
     g_version = args.version.replace("-", ".")
+    # if the caller didn't explicitly set a version we try to query the
+    # compiled executable. on CI the executable may emit non-utf8 data and
+    # previously this caused a UnicodeDecodeError which silently aborted the
+    # script, leaving the .wxs includes empty and generated the WIX0150
+    # complaints you saw.  callers are encouraged to always pass ``--version``
+    # from the workflow, but we keep the fallback here for convenience and
+    # robustness.
     if g_version == "":
         g_version = read_process_output("--version")
     version_pattern = re.compile(r"\d+\.\d+\.\d+.*")

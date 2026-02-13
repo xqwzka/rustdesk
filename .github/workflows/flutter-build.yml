@@ -259,9 +259,16 @@ jobs:
         if: env.UPLOAD_ARTIFACT == 'true'
         run: |
           pushd ./res/msi
-          python preprocess.py --arp -d ../../rustdesk
+          # make sure the preprocess step runs successfully; provide the
+          # version/manufacturer explicitly so the script does not have to
+          # invoke the exe (which on some runners produced non‑utf8 output and
+          # caused a crash).
+          python preprocess.py --arp -d ../../rustdesk --version "${{ env.VERSION }}" --manufacturer "SRYDESK_Team"
           nuget restore msi.sln
-          msbuild msi.sln -p:Configuration=Release -p:Platform=x64 /p:TargetVersion=Windows10 /p:DefineConstants="Version=1.4.5%3BProduct=SRYDESK%3BProductLower=srydesk%3BRegKeyRoot=srydesk%3BBuildDir=../../rustdesk%3BBuildDate=2025-01-01%3BManufacturer=SRYDESK_Team%3BUpgradeCode={7E936237-7757-463C-B972-747209E78065}%3BDescription=SRYDESK_Remote_Desktop"
+          # quoting in bash is tricky; avoid URL‑encoding the semicolons and
+          # let msbuild see them directly.  on windows runners you can also use
+          # powershell/cmd style if preferred.
+          msbuild msi.sln -p:Configuration=Release -p:Platform=x64 /p:TargetVersion=Windows10 /p:DefineConstants="Version=${{ env.VERSION }};Product=SRYDESK;ProductLower=srydesk;RegKeyRoot=srydesk;BuildDir=../../rustdesk;Manufacturer=SRYDESK_Team;UpgradeCode={7E936237-7757-463C-B972-747209E78065};Description=SRYDESK_Remote_Desktop"
           ls ./Package/bin/x64/Release/en-us/
           mv ./Package/bin/x64/Release/en-us/Package.msi ../../SignOutput/srydesk-${{ env.VERSION }}-${{ matrix.job.arch }}.msi
           sha256sum ../../SignOutput/srydesk-*.ms
