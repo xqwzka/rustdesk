@@ -261,9 +261,9 @@ jobs:
           pushd ./res/msi
           python preprocess.py --arp -d ../../rustdesk
           nuget restore msi.sln
-          msbuild msi.sln -p:Configuration=Release -p:Platform=x64 /p:TargetVersion=Windows10 /p:DefineConstants="Version=${{ env.VERSION }};Product=SRYDESK;ProductLower=srydesk;RegKeyRoot=srydesk;BuildDir=../../rustdesk;BuildDate=2025-01-01"
-          mv ./Package/bin/x64/Release/en-us/Package.msi ../../SignOutput/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.msi
-          sha256sum ../../SignOutput/rustdesk-*.msi
+          msbuild msi.sln -p:Configuration=Release -p:Platform=x64 /p:TargetVersion=Windows10 /p:DefineConstants="Version=${{ env.VERSION }};Product=SRYDESK;ProductLower=srydesk;RegKeyRoot=srydesk;BuildDir=../../rustdesk;BuildDate=2025-01-01;Manufacturer=SRYDESK Team;UpgradeCode={7E936237-7757-463C-B972-747209E78065};Description=SRYDESK Remote Desktop"
+          mv ./Package/bin/x64/Release/en-us/Package.msi ../../SignOutput/srydesk-${{ env.VERSION }}-${{ matrix.job.arch }}.msi
+          sha256sum ../../SignOutput/srydesk-*.msi
 
       - name: Sign rustdesk self-extracted file
         if: env.UPLOAD_ARTIFACT == 'true' && env.SIGN_BASE_URL != '-2'
