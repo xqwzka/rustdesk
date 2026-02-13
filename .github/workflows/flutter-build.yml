@@ -247,10 +247,10 @@ jobs:
           sed -i '/dpiAware/d' res/manifest.xml
           pushd ./libs/portable
           pip3 install -r requirements.txt
-          python3 ./generate.py -f ../../rustdesk/ -o . -e ../../rustdesk/rustdesk.exe
+          python3 ./generate.py -f ../../rustdesk/ -o . -e ../../rustdesk/srydesk.exe
           popd
           mkdir -p ./SignOutput
-          mv ./target/release/rustdesk-portable-packer.exe ./SignOutput/rustdesk-${{ env.VERSION }}-${{ matrix.job.arch }}.exe
+          mv ./target/release/rustdesk-portable-packer.exe ./SignOutput/srydesk-${{ env.VERSION }}-${{ matrix.job.arch }}.exe
 
       - name: Add MSBuild to PATH
         uses: microsoft/setup-msbuild@v2
@@ -261,7 +261,7 @@ jobs:
           pushd ./res/msi
           python preprocess.py --arp -d ../../rustdesk
           nuget restore msi.sln
-          msbuild msi.sln -p:Configuration=Release -p:Platform=x64 /p:TargetVersion=Windows10 '/p:DefineConstants="Version=${{ env.VERSION }};Product=SRYDESK;ProductLower=srydesk;RegKeyRoot=srydesk;BuildDir=../../rustdesk;BuildDate=2025-01-01;Manufacturer=SRYDESK Team;UpgradeCode={7E936237-7757-463C-B972-747209E78065};Description=SRYDESK Remote Desktop"'
+          msbuild msi.sln -p:Configuration=Release -p:Platform=x64 /p:TargetVersion=Windows10 '/p:DefineConstants="Product=SRYDESK;Version=1.4.5;ProductLower=srydesk;RegKeyRoot=srydesk;BuildDir=../../rustdesk;BuildDate=2025-01-01;Manufacturer=SRYDESK Team;UpgradeCode={7E936237-7757-463C-B972-747209E78065};Description=SRYDESK Remote Desktop"'
           mv ./Package/bin/x64/Release/en-us/Package.msi ../../SignOutput/srydesk-${{ env.VERSION }}-${{ matrix.job.arch }}.msi
           sha256sum ../../SignOutput/srydesk-*.msi
 
@@ -278,8 +278,8 @@ jobs:
           prerelease: true
           tag_name: ${{ env.TAG_NAME }}
           files: |
-            ./SignOutput/rustdesk-*.msi
-            ./SignOutput/rustdesk-*.exe
+            ./SignOutput/srydesk-*.msi
+            ./SignOutput/srydesk-*.exe
 
   # The fallback for the flutter version, we use Sciter for 32bit Windows.
   build-for-windows-sciter:
