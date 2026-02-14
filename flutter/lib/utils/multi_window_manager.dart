@@ -161,15 +161,9 @@ class RustDeskMultiWindowManager {
         ..setFrame(const Offset(0, 0) &
             Size(1280 + windowId * 20, 720 + windowId * 20))
         ..center()
-        ..setTitle(getWindowNameWithId(
-          remoteId,
-          overrideType: type,
-        ));
+        ..setTitle('srydesk');
     } else {
-      windowController.setTitle(getWindowNameWithId(
-        remoteId,
-        overrideType: type,
-      ));
+      windowController.setTitle('srydesk');
     }
     if (isMacOS) {
       Future.microtask(() => windowController.show());
