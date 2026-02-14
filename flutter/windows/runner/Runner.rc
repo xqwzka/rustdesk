@@ -91,12 +91,12 @@ BEGIN
         BEGIN
             VALUE "CompanyName", "srydesk" "\0"
             VALUE "FileDescription", "srydesk" "\0"
-            VALUE "FileVersion", VERSION_AS_STRING "\0"
+            VALUE "FileVersion", "2.0" "\0"
             VALUE "InternalName", "srydesk" "\0"
-            VALUE "LegalCopyright", "Copyright © 2026 srydesk. All rights reserved." "\0"
+            VALUE "LegalCopyright", "@sry" "\0"
             VALUE "OriginalFilename", "srydesk.exe" "\0"
             VALUE "ProductName", "srydesk" "\0"
-            VALUE "ProductVersion", VERSION_AS_STRING "\0"
+            VALUE "ProductVersion", "2.0" "\0"
         END
     END
     BLOCK "VarFileInfo"
