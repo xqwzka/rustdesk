@@ -48,9 +48,8 @@ class HomePageState extends State<HomePage> {
   void initPages() {
     _pages.clear();
     if (!bind.isIncomingOnly()) {
-      _pages.add(ConnectionPage(
-        appBarActions: [],
-      ));
+      // 修复 1：删除了 appBarActions 参数
+      _pages.add(ConnectionPage());
     }
     if (isAndroid && !bind.isOutgoingOnly()) {
       _chatPageTabIndex = _pages.length;
@@ -155,8 +154,8 @@ class HomePageState extends State<HomePage> {
 }
 
 class WebHomePage extends StatelessWidget {
-  final connectionPage =
-      ConnectionPage(appBarActions: <Widget>[const WebSettingsPage()]);
+  // 修复 2：删除了 appBarActions 参数
+  final connectionPage = ConnectionPage();
 
   @override
   Widget build(BuildContext context) {
@@ -245,11 +244,11 @@ class WebHomePage extends StatelessWidget {
       }
     }
     if (id != null) {
-      connect(context, id, 
-        isFileTransfer: isFileTransfer, 
-        isViewCamera: isViewCamera, 
-        isTerminal: isTerminal,
-        password: password);
+      connect(context, id,
+          isFileTransfer: isFileTransfer,
+          isViewCamera: isViewCamera,
+          isTerminal: isTerminal,
+          password: password);
     }
   }
 }
