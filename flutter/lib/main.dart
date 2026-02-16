@@ -155,7 +155,11 @@ void runMainApp(bool startService) async {
 
   // Set window option.
   WindowOptions windowOptions = getHiddenTitleBarWindowOptions(
-      isMainWindow: true, alwaysOnTop: alwaysOnTop);
+      isMainWindow: true, 
+    alwaysOnTop: alwaysOnTop,
+    size: Size(340, 260), // <--- 在这里加上您想要的宽和高
+    center: true,          // <--- 可选：让它启动时居中
+  );
   windowManager.waitUntilReadyToShow(windowOptions, () async {
     // Restore the location of the main window before window hide or show.
     await restoreWindowPosition(WindowType.Main);
