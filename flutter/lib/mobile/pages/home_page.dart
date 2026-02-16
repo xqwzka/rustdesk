@@ -27,7 +27,8 @@ class HomePage extends StatefulWidget {
 class HomePageState extends State<HomePage> {
   var _selectedIndex = 0;
   int get selectedIndex => _selectedIndex;
-  final List<PageShape> _pages = [];
+  // 修改 1: 将类型从 List<PageShape> 改为 List<Widget>，以兼容 ConnectionPage
+  final List<Widget> _pages = [];
   int _chatPageTabIndex = -1;
   bool get isChatPageCurrentTab => isAndroid
       ? _selectedIndex == _chatPageTabIndex
@@ -48,7 +49,6 @@ class HomePageState extends State<HomePage> {
   void initPages() {
     _pages.clear();
     if (!bind.isIncomingOnly()) {
-      // 修复 1：删除了 appBarActions 参数
       _pages.add(ConnectionPage());
     }
     if (isAndroid && !bind.isOutgoingOnly()) {
@@ -76,14 +76,23 @@ class HomePageState extends State<HomePage> {
           appBar: AppBar(
             centerTitle: true,
             title: appTitle(),
-            actions: _pages.elementAt(_selectedIndex).appBarActions,
+            // 修改 2: 增加类型判断。如果不是 PageShape（比如 ConnectionPage），则不显示 Actions
+            actions: _pages[_selectedIndex] is PageShape
+                ? (_pages[_selectedIndex] as PageShape).appBarActions
+                : [],
           ),
           bottomNavigationBar: BottomNavigationBar(
             key: navigationBarKey,
-            items: _pages
-                .map((page) =>
-                    BottomNavigationBarItem(icon: page.icon, label: page.title))
-                .toList(),
+            // 修改 3: 增加类型判断。如果是 ConnectionPage，手动设置图标和标题
+            items: _pages.map((page) {
+              if (page is PageShape) {
+                return BottomNavigationBarItem(
+                    icon: page.icon, label: page.title);
+              }
+              // ConnectionPage 的默认图标和标题
+              return BottomNavigationBarItem(
+                  icon: Icon(Icons.home), label: translate('Connection'));
+            }).toList(),
             currentIndex: _selectedIndex,
             type: BottomNavigationBarType.fixed,
             selectedItemColor: MyTheme.accent, //
@@ -154,7 +163,6 @@ class HomePageState extends State<HomePage> {
 }
 
 class WebHomePage extends StatelessWidget {
-  // 修复 2：删除了 appBarActions 参数
   final connectionPage = ConnectionPage();
 
   @override
@@ -166,7 +174,8 @@ class WebHomePage extends StatelessWidget {
       appBar: AppBar(
         centerTitle: true,
         title: Text("${bind.mainGetAppNameSync()} (Preview)"),
-        actions: connectionPage.appBarActions,
+        // 修改 4: Web版同样直接给空列表，避免访问不存在的 appBarActions
+        actions: [],
       ),
       body: connectionPage,
     );
